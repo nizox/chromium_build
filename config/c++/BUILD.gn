@@ -114,16 +114,17 @@ config("runtime_library") {
       cflags_cc += [ "-isystem" + rebase_path("$libunwind_prefix/include", root_build_dir) ]
     }
 
-    if (use_musl_libc) {
-      cflags_cc += [ "-nostdinc", "-isystem/usr/include/x86_64-linux-musl" ]
-    }
-
     defines += [ "CR_LIBCXX_REVISION=$libcxx_svn_revision" ]
 
     # Make sure we don't link against the system libstdc++ or libc++.
     if (is_clang) {
       ldflags += [ "-nostdlib++" ]
     } else {
+
+      if (use_musl_libc) {
+        cflags_cc += [ "-specs", "/usr/lib/x86_64-linux-musl/musl-gcc.specs" ]
+      }
+
       # Gcc has a built-in abs() definition with default visibility.
       # If it was not disabled, it would conflict with libc++'s abs()
       # with hidden visibility.
