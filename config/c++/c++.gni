@@ -39,6 +39,11 @@ declare_args() {
   # generation of snapshot_blob.bin take ~40-60 s longer. Therefore this
   # defaults to off.
   enable_iterator_debugging = false
+
+  # use musl libc instead of glibc
+  use_musl_libc = false
+
+  use_custom_libunwind = false
 }
 
 use_custom_libcxx =
@@ -79,3 +84,4 @@ if (is_android && export_libcxxabi_from_executables) {
 
 libcxx_prefix = "//buildtools/third_party/libc++/trunk"
 libcxxabi_prefix = "//buildtools/third_party/libc++abi/trunk"
+libunwind_prefix = "//buildtools/third_party/libunwind/trunk"

@@ -60,6 +60,9 @@ config("runtime_library") {
   }
 
   defines += [ "_LIBCPP_ENABLE_NODISCARD" ]
+  if (use_custom_libcxx && use_musl_libc) {
+    defines += [ "_LIBCPP_HAS_MUSL_LIBC" ]
+  }
 
   # The Windows component build fails to link with libc++'s debug mode. See
   # https://crbug.com/923166#c33, https://crbug.com/923166#c44, and
@@ -106,6 +109,14 @@ config("runtime_library") {
       "-isystem" + rebase_path("$libcxxabi_prefix/include", root_build_dir),
     ]
     cflags_objcc = cflags_cc
+
+    if (use_custom_libunwind) {
+      cflags_cc += [ "-isystem" + rebase_path("$libunwind_prefix/include", root_build_dir) ]
+    }
+
+    if (use_musl_libc) {
+      cflags_cc += [ "-nostdinc", "-isystem/usr/include/x86_64-linux-musl" ]
+    }
 
     defines += [ "CR_LIBCXX_REVISION=$libcxx_svn_revision" ]
 
